@@ -7,7 +7,7 @@
   <title>ChaiVision Company Wiki</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -33,7 +33,7 @@
     </form>
   </div>
 
-  <!-- App (hidden until unlocked) -->
+  <!-- App -->
   <div id="app" hidden>
     <header class="topbar">
       <div class="topbar-inner">
@@ -51,32 +51,54 @@
       </div>
     </header>
 
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <p class="eyebrow">ChaiVision Company Glossary</p>
+        <h1 class="hero-title">One company.<br />One language.</h1>
+        <div class="hero-stat"><span id="hero-count" class="hero-count" data-count="0">0</span></div>
+        <p class="hero-sub">terms defined and searchable across the company</p>
+      </div>
+    </section>
+
     <main class="container">
-      <section class="hero">
-        <h1 class="hero-title">One company. One language.</h1>
-        <p class="hero-sub">Search every term, acronym, and definition across ChaiVision.</p>
+      <!-- Stat tiles -->
+      <section class="stats" id="stats" aria-label="Overview"></section>
+
+      <!-- Department leaderboard -->
+      <section class="panel board-panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Department Leaderboard</h2>
+          <p class="panel-sub">Glossary terms contributed by each team</p>
+        </div>
+        <div id="board" class="board"></div>
+      </section>
+
+      <!-- Glossary -->
+      <section class="panel" id="glossary">
+        <div class="panel-head">
+          <h2 class="panel-title">Glossary</h2>
+        </div>
         <div class="search">
           <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input id="search" type="search" placeholder="Search terms, acronyms, definitions…" autocomplete="off" aria-label="Search glossary" />
           <button id="search-clear" class="search-clear" aria-label="Clear search" hidden>&times;</button>
         </div>
+        <nav id="chips" class="chips" aria-label="Filter by department"></nav>
+        <p id="result-count" class="result-count" aria-live="polite"></p>
+        <div id="list" class="list"></div>
+        <div id="empty" class="empty" hidden>
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <p id="empty-text">No terms yet.</p>
+        </div>
       </section>
-
-      <nav id="chips" class="chips" aria-label="Filter by department"></nav>
-
-      <p id="result-count" class="result-count" aria-live="polite"></p>
-
-      <div id="list" class="list"></div>
-
-      <div id="empty" class="empty" hidden>
-        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <p id="empty-text">No terms yet.</p>
-      </div>
     </main>
 
     <footer class="footer">
-      <span id="footer-meta"></span>
-      <span class="footer-note">Source of truth: the company glossary Google Sheet. Edits happen there; this wiki refreshes daily.</span>
+      <div class="container footer-inner">
+        <span id="footer-meta"></span>
+        <span class="footer-note">Source of truth: the company glossary Google Sheet. Edits happen there; this wiki refreshes daily.</span>
+      </div>
     </footer>
   </div>
 
