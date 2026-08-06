@@ -39,7 +39,7 @@ function loadPasscode() {
 
 // --- read the sheet ---------------------------------------------------------
 function readSheet() {
-  const ranges = DEPARTMENTS.map((d) => `${d}!A3:J400`);
+  const ranges = DEPARTMENTS.map((d) => `${d}!A3:J1000`);
   const params = JSON.stringify({ spreadsheetId: SPREADSHEET_ID, ranges, majorDimension: 'ROWS' });
   const out = execFileSync('gws', ['sheets', 'spreadsheets', 'values', 'batchGet', '--params', params, '--format', 'json'], {
     encoding: 'utf8',
