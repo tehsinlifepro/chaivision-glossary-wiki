@@ -52,6 +52,7 @@ function countUp(el, target) {
     if (p < 1) setTimeout(step, 16); else el.textContent = target; // guaranteed final value
   };
   setTimeout(step, 16);
+  setTimeout(() => { el.textContent = target; }, dur + 400); // hard guarantee even if timers are throttled
 }
 function deptCounts() {
   const c = {};
@@ -67,34 +68,119 @@ async function showGateMeta() {
     $('#gate-meta').textContent = `${meta.count} term${meta.count === 1 ? '' : 's'} · updated ${when}`;
   } catch { /* first ever load */ }
 }
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function unlock(e) {
   e.preventDefault();
   const passcode = $('#passcode').value.trim();
   const btn = $('#gate-btn');
   $('#gate-error').hidden = true;
   if (!passcode) return;
-  btn.disabled = true; btn.textContent = 'Unlocking…';
+  btn.disabled = true;
+  btn.classList.add('loading');
   try {
     const payload = await (await fetch('data.enc.json', { cache: 'no-store' })).json();
     const data = await decrypt(payload, passcode);
     TERMS = data.terms || [];
     sessionStorage.setItem('cv-pass', passcode);
-    enterApp(data.builtAt);
+    btn.classList.remove('loading');
+    btn.classList.add('done');            // spinner → checkmark
+    await wait(reduceMotion ? 0 : 320);
+    transitionToApp(data.builtAt);        // gate out, app in like a new page
   } catch {
-    $('#gate-error').hidden = false; $('#passcode').select();
-  } finally {
-    btn.disabled = false; btn.textContent = 'Unlock';
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    $('#gate-error').hidden = false;
+    shake($('.gate-card'));
+    $('#passcode').select();
   }
 }
 
+function shake(el) {
+  if (reduceMotion || !el) return;
+  el.classList.remove('shake');
+  void el.offsetWidth; // restart the animation
+  el.classList.add('shake');
+  el.addEventListener('animationend', () => el.classList.remove('shake'), { once: true });
+}
+
+// Manual unlock: animated "new page" transition + celebration.
+function transitionToApp(builtAt) {
+  const gate = $('#gate'), app = $('#app');
+  if (reduceMotion) { gate.hidden = true; app.hidden = false; finishEnter(builtAt, false); return; }
+  gate.classList.add('leaving');
+  setTimeout(() => {
+    gate.hidden = true; gate.classList.remove('leaving');
+    app.hidden = false; app.classList.add('entering');
+    window.scrollTo(0, 0);
+    finishEnter(builtAt, true);
+    setTimeout(() => app.classList.remove('entering'), 560);
+  }, 320);
+}
+
+// Same-session reload (remembered passcode): straight in, no fanfare.
 function enterApp(builtAt) {
   $('#gate').hidden = true;
   $('#app').hidden = false;
+  finishEnter(builtAt, false);
+}
+
+function finishEnter(builtAt, celebrate) {
   $('#footer-meta').textContent = builtAt ? `Last refreshed ${new Date(builtAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}` : '';
   renderOverview();
   renderBoard();
   renderChips();
   render();
+  if (celebrate) { stagger(['#stats', '.board-panel', '#glossary']); confetti(); }
+}
+
+function stagger(selectors) {
+  if (reduceMotion) return;
+  selectors.forEach((sel, i) => {
+    const el = $(sel);
+    if (!el) return;
+    const delay = i * 100;
+    el.style.animationDelay = delay + 'ms';
+    el.classList.add('stagger');
+    const clear = () => { el.classList.remove('stagger'); el.style.animationDelay = ''; };
+    el.addEventListener('animationend', clear, { once: true });
+    setTimeout(clear, delay + 900); // guarantee reveal even if animationend never fires
+  });
+}
+
+function confetti() {
+  if (reduceMotion) return;
+  const c = $('#confetti');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+  ctx.scale(dpr, dpr);
+  const colors = ['#0C2748', '#E1624B', '#324C90', '#5F95CD', '#ffffff'];
+  const parts = Array.from({ length: 150 }, (_, i) => ({
+    x: innerWidth / 2 + (Math.random() - 0.5) * 240, y: innerHeight * 0.26,
+    vx: (Math.random() - 0.5) * 11, vy: Math.random() * -10 - 4, g: 0.3 + Math.random() * 0.12,
+    size: 6 + Math.random() * 7, rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.4,
+    color: colors[i % colors.length],
+  }));
+  const start = Date.now();
+  (function frame() {
+    const t = Date.now() - start;
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    let alive = false;
+    for (const p of parts) {
+      p.vy += p.g; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if (p.y < innerHeight + 30) alive = true;
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, 1 - t / 1700);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+    }
+    if (t < 1700 && alive) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, innerWidth, innerHeight);
+  })();
 }
 
 /* ---------- overview + leaderboard ---------- */

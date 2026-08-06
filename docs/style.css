@@ -77,9 +77,17 @@ button, input { font-family: inherit; }
 .pass-toggle.on .i-eye { display: none; }
 .pass-toggle.on .i-eye-off { display: block; }
 #gate-btn, .search-clear, .chip, .board-row, .icon-btn { cursor: pointer; }
-#gate-btn { padding: 12px 20px; font-size: 15px; font-weight: 600; color: #fff; background: var(--coral); border: none; border-radius: var(--radius-sm); transition: background 180ms ease; }
-#gate-btn:hover { background: var(--coral-dark); }
-#gate-btn:disabled { opacity: 0.6; cursor: default; }
+#gate-btn { position: relative; min-width: 104px; padding: 12px 20px; font-size: 15px; font-weight: 600; color: #fff; background: var(--coral); border: none; border-radius: var(--radius-sm); transition: background 180ms ease, transform 130ms ease; }
+#gate-btn:hover { background: var(--coral-dark); transform: translateY(-1px); }
+#gate-btn:active { transform: translateY(0) scale(0.96); }
+#gate-btn:disabled { cursor: default; }
+#gate-btn.done { background: #2fb178; }
+.btn-spinner, .btn-check { display: none; }
+#gate-btn.loading .btn-label, #gate-btn.done .btn-label { visibility: hidden; }
+#gate-btn.loading .btn-spinner { display: block; position: absolute; inset: 0; margin: auto; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.45); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+#gate-btn.done .btn-check { display: block; position: absolute; inset: 0; margin: auto; animation: pop 260ms cubic-bezier(0.22,1.4,0.5,1); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .gate-error { color: var(--coral); font-size: 14px; margin: var(--space-2) 0 0; font-weight: 500; }
 .gate-metaline { color: var(--text-muted); font-size: 12px; margin: var(--space-4) 0 0; }
 
@@ -95,13 +103,13 @@ button, input { font-family: inherit; }
 :root[data-theme="dark"] .i-moon { display: block; }
 
 /* ---- Hero ---- */
-.hero { position: relative; background: linear-gradient(160deg, var(--navy) 0%, #14315b 60%, var(--blue) 130%); color: #fff; padding: var(--space-6) 0 calc(var(--space-6) + 40px); text-align: center; overflow: hidden; }
-.hero::after { content: ""; position: absolute; inset: auto 0 -1px 0; height: 40px; background: var(--bg); clip-path: ellipse(120% 100% at 50% 100%); }
-.eyebrow { text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px; font-weight: 600; color: var(--blue-light); margin: 0 0 var(--space-2); }
-.hero-title { font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 900; letter-spacing: -0.035em; line-height: 1.02; margin: 0 0 var(--space-3); }
+.hero { position: relative; background: linear-gradient(160deg, var(--navy) 0%, #14315b 60%, var(--blue) 130%); color: #fff; padding: var(--space-4) 0 calc(var(--space-3) + 32px); text-align: center; overflow: hidden; }
+.hero::after { content: ""; position: absolute; inset: auto 0 -1px 0; height: 32px; background: var(--bg); clip-path: ellipse(120% 100% at 50% 100%); }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.16em; font-size: 12px; font-weight: 600; color: var(--blue-light); margin: 0 0 var(--space-1); }
+.hero-title { font-size: clamp(1.7rem, 5vw, 2.6rem); font-weight: 900; letter-spacing: -0.035em; line-height: 1.03; margin: 0 0 var(--space-2); }
 .hero-stat { display: flex; justify-content: center; align-items: baseline; }
-.hero-count { font-size: clamp(3rem, 12vw, 5.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; background: linear-gradient(180deg, #fff, #cfe0f5); -webkit-background-clip: text; background-clip: text; color: transparent; font-variant-numeric: tabular-nums; }
-.hero-sub { color: #b8c8dd; font-size: clamp(0.95rem, 2.5vw, 1.1rem); margin: var(--space-1) auto 0; max-width: 44ch; }
+.hero-count { font-size: clamp(2.6rem, 10vw, 4.4rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; background: linear-gradient(180deg, #fff, #cfe0f5); -webkit-background-clip: text; background-clip: text; color: transparent; font-variant-numeric: tabular-nums; }
+.hero-sub { color: #b8c8dd; font-size: clamp(0.9rem, 2.5vw, 1.05rem); margin: 4px auto 0; max-width: 44ch; }
 
 /* ---- Stat tiles ---- */
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); margin: calc(-1 * var(--space-5)) 0 var(--space-4); position: relative; z-index: 5; }
@@ -191,4 +199,33 @@ mark { background: rgba(225,98,75,0.28); color: inherit; border-radius: 3px; pad
   .footer-inner { flex-direction: column; }
   .letter-head { top: 56px; }
 }
+/* ---- Joyful motion layer ---- */
+#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+
+/* gate exits, app enters like a new page */
+@keyframes gateOut { to { opacity: 0; transform: scale(0.96) translateY(-10px); } }
+@keyframes appIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+#gate.leaving { animation: gateOut 340ms cubic-bezier(0.4, 0, 1, 1) forwards; }
+#app.entering { animation: appIn 520ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* staggered entrance for the sections */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+/* backwards fill only holds the pre-animation (hidden) state during the delay, then
+   the element returns to its always-visible base — so content is never gated on the animation firing. */
+.stagger { animation: fadeUp 520ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+
+/* wrong-passcode shake */
+@keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(3px); } 30%, 50%, 70% { transform: translateX(-7px); } 40%, 60% { transform: translateX(7px); } }
+.gate-card.shake { animation: shake 480ms; }
+
+/* tactile micro-interactions */
+.chip { transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 130ms ease; }
+.chip:active { transform: scale(0.95); }
+.board-row { transition: background 160ms ease, border-color 160ms ease, transform 130ms ease; }
+.board-row:active { transform: scale(0.99); }
+.stat-tile { transition: transform 160ms ease, box-shadow 160ms ease; }
+.stat-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+#theme-toggle svg { transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1); }
+#theme-toggle:hover svg { transform: rotate(25deg); }
+
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .bar-fill { transition: none !important; } }
