@@ -1,0 +1,12 @@
+{
+  "builtAt": "2026-08-06T03:27:45.683Z",
+  "count": 0,
+  "byDepartment": {
+    "Operations": 0,
+    "Marketing": 0,
+    "HR": 0,
+    "Finance": 0,
+    "Sales": 0,
+    "Product Development": 0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "chaivision-glossary-wiki",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ChaiVision Company Glossary Wiki — static site built daily from the company glossary Google Sheet.",
+  "scripts": {
+    "build": "node build.mjs",
+    "update": "node build.mjs && git add -A docs && git diff --cached --quiet || git commit -m \"chore: daily glossary refresh\" && git push"
+  }
+}
