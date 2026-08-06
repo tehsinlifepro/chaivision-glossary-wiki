@@ -116,6 +116,15 @@ const builtAt = new Date().toISOString();
 const payload = await encrypt(JSON.stringify({ terms, builtAt }), passcode);
 writeFileSync(join(DOCS, 'data.enc.json'), JSON.stringify(payload));
 
+// Cache-bust the asset URLs so browsers always fetch the latest CSS/JS after a deploy
+// (HTML revalidates on refresh, but style.css / app.js otherwise stay cached).
+const v = Date.parse(builtAt);
+const idxPath = join(DOCS, 'index.html');
+const idx = readFileSync(idxPath, 'utf8')
+  .replace(/href="style\.css(?:\?v=\d+)?"/, `href="style.css?v=${v}"`)
+  .replace(/src="app\.js(?:\?v=\d+)?"/, `src="app.js?v=${v}"`);
+writeFileSync(idxPath, idx);
+
 // meta.json is public (no term data) — powers the "last updated" line before unlock.
 const byDept = {};
 for (const d of DEPARTMENTS) byDept[d] = terms.filter((t) => t.department === d).length;
