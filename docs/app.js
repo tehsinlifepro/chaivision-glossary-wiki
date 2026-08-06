@@ -220,6 +220,15 @@ function init() {
   showGateMeta();
   $('#gate-form').addEventListener('submit', unlock);
   $('#theme-toggle').addEventListener('click', toggleTheme);
+  $('#pass-toggle').addEventListener('click', () => {
+    const inp = $('#passcode'), btn = $('#pass-toggle');
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.classList.toggle('on', show);
+    btn.setAttribute('aria-pressed', String(show));
+    btn.setAttribute('aria-label', show ? 'Hide passcode' : 'Show passcode');
+    inp.focus();
+  });
   const search = $('#search');
   search.addEventListener('input', () => { query = search.value.trim(); $('#search-clear').hidden = !query; render(); });
   $('#search-clear').addEventListener('click', () => { search.value = ''; query = ''; $('#search-clear').hidden = true; render(); search.focus(); });

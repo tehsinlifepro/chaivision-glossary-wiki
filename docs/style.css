@@ -69,7 +69,13 @@ button, input { font-family: inherit; }
 .gate-title { margin: 0 0 4px; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
 .gate-help { margin: 0 0 var(--space-4); color: var(--text-muted); font-size: 14px; }
 .gate-input-row { display: flex; gap: var(--space-1); }
-#passcode { flex: 1; min-width: 0; padding: 12px 14px; font-size: 15px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); }
+.pass-wrap { position: relative; flex: 1; min-width: 0; }
+#passcode { width: 100%; padding: 12px 44px 12px 14px; font-size: 15px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); }
+.pass-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; display: grid; place-items: center; background: none; border: none; color: var(--text-muted); border-radius: 8px; }
+.pass-toggle:hover { color: var(--text); background: var(--muted); }
+.pass-toggle .i-eye-off { display: none; }
+.pass-toggle.on .i-eye { display: none; }
+.pass-toggle.on .i-eye-off { display: block; }
 #gate-btn, .search-clear, .chip, .board-row, .icon-btn { cursor: pointer; }
 #gate-btn { padding: 12px 20px; font-size: 15px; font-weight: 600; color: #fff; background: var(--coral); border: none; border-radius: var(--radius-sm); transition: background 180ms ease; }
 #gate-btn:hover { background: var(--coral-dark); }
