@@ -44,7 +44,7 @@ async function showGateMeta() {
   try {
     const meta = await (await fetch('meta.json', { cache: 'no-store' })).json();
     const when = new Date(meta.builtAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-    $('#gate-meta').textContent = `${meta.count} approved term${meta.count === 1 ? '' : 's'} · updated ${when}`;
+    $('#gate-meta').textContent = `${meta.count} term${meta.count === 1 ? '' : 's'} · updated ${when}`;
   } catch { /* meta may not exist on first ever load */ }
 }
 
@@ -125,7 +125,7 @@ function render() {
     list.innerHTML = '';
     empty.hidden = false;
     $('#empty-text').textContent = TERMS.length === 0
-      ? 'No approved terms yet. They appear here as department heads approve them in the glossary sheet.'
+      ? 'No terms yet. They appear here as they are added to the glossary sheet.'
       : `No terms match “${query}”.`;
     return;
   }

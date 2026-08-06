@@ -17,9 +17,9 @@ const DOCS = join(ROOT, 'docs');
 const SPREADSHEET_ID = '1pK1qrJ1L6TZaNmWJ7vUKF2OdQ99auvPGMm3ClRVg8Gw';
 const DEPARTMENTS = ['Operations', 'Marketing', 'HR', 'Finance', 'Sales', 'Product Development'];
 
-// The glossary shows only terms a department head has marked "Approved".
-// Flip to false to preview every term that has been submitted (any status).
-const APPROVED_ONLY = true;
+// Rollout mode: show every submitted term (any status). Flip to true once the
+// glossary is populated and department heads are actively marking terms "Approved".
+const APPROVED_ONLY = false;
 
 // PBKDF2 iterations — must match the browser (app.js).
 const ITERATIONS = 150000;
